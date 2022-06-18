@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Martin Svanholm</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <Description>This package is used to interact with CS:GO servers. Either through remote-console or the DatHost API.</Description>
+    <PackageProjectUrl>https://github.com/MartinSvanholm/CSGOServerPackage</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MartinSvanholm/CSGOServerPackage</RepositoryUrl>
+    <PackageId>CsgoServerInterface</PackageId>
+    <Version>1.0.0</Version>
+    <Company>Martin Svanholm</Company>
+    <Product>CsgoServerInterface</Product>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+</Project>
