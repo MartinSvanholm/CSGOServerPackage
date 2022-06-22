@@ -65,7 +65,7 @@ public class CsgoSettings
     public string? SteamGameServerLoginToken { get; set; }
 
     [JsonProperty("tickrate")]
-    public int Tickrate { get; set; }
+    public double Tickrate { get; set; }
 
     [JsonProperty("workshop_authkey")]
     public string? WorkshopAuthkey { get; set; }

@@ -7,44 +7,61 @@ using System.Threading.Tasks;
 
 namespace CsgoServerInterface.CsgoServer;
 
-public class DatHostServer : ICsgoServer
+/// <summary>
+/// This is the class for CS:GO Servers from Dathost.net, these servers make use of the DatHost Api. Therefore these servers does not intergrate the rcon protocol.
+/// </summary>
+public class DatHostServer : AbstractCsgoServer
 {
-    public DatHostServer(HttpClient httpClient, bool booting, CsgoSettings csgoSettings, string game, string id, string ip, string location, string matchId, string name, bool on, int playersOnline, Ports ports, string rawIp)
-    {
-        Booting = booting;
-        CsgoSettings = csgoSettings ?? throw new ArgumentNullException(nameof(csgoSettings));
-        Game = game ?? throw new ArgumentNullException(nameof(game));
-        Id = id ?? throw new ArgumentNullException(nameof(id));
-        Ip = ip ?? throw new ArgumentNullException(nameof(ip));
-        Location = location ?? throw new ArgumentNullException(nameof(location));
-        MatchId = matchId ?? throw new ArgumentNullException(nameof(matchId));
-        Name = name ?? throw new ArgumentNullException(nameof(name));
-        On = on;
-        PlayersOnline = playersOnline;
-        Ports = ports ?? throw new ArgumentNullException(nameof(ports));
-        RawIp = rawIp ?? throw new ArgumentNullException(nameof(rawIp));
-    }
+    private bool IsPracmodePratice = false;
 
-    public bool Booting { get; set; }
-    public CsgoSettings CsgoSettings { get; set; }
-    public string Game { get; set; }
-    public string Id { get; set; }
-    public string Ip { get; set; }
-    public string Location { get; set; }
-    public string MatchId { get; set; }
-    public string Name { get; set; }
-    public bool On { get; set; }
-    public int PlayersOnline { get; set; }
-    public Ports Ports { get; set; }
-    public string RawIp { get; set; }
-
-    public async Task<ICsgoServer> StartNadePractice(HttpClient httpClient)
+    /// <summary>
+    /// This method runs any command you could run in the cs:go console.
+    /// </summary>
+    /// <param name="httpClient"></param>
+    /// <param name="command"></param>
+    /// <returns>AbstractCsgoServer</returns>
+    /// <exception cref="CsgoServerException"></exception>
+    public override async Task<AbstractCsgoServer> RunCommand(HttpClient httpClient, string command)
     {
         string uri = httpClient.BaseAddress + $"/api/0.1/game-servers/{Id}/console";
 
         var values = new Dictionary<string, string>
             {
                 { "line", $"sm_prac" },
+            };
+        var content = new FormUrlEncodedContent(values);
+
+        using HttpResponseMessage responseMessage = await httpClient.PostAsync(uri, content);
+
+        if (responseMessage.IsSuccessStatusCode)
+        {
+            return this;
+        }
+        else
+        {
+            if (responseMessage.ReasonPhrase == null)
+                responseMessage.ReasonPhrase = $"Could not run command: {command}";
+
+            throw new CsgoServerException(responseMessage.ReasonPhrase, this, responseMessage.StatusCode);
+        }
+    }
+
+    /// <summary>
+    /// This method starts a nade practice using the sourcemod plugin csgo-practice-mode.
+    /// </summary>
+    /// <param name="httpClient"></param>
+    /// <returns>AbstractCsgoServer</returns>
+    /// <exception cref="CsgoServerException"></exception>
+    public override async Task<AbstractCsgoServer> StartNadePractice(HttpClient httpClient, string cfg = "sm_prac")
+    {
+        string uri = httpClient.BaseAddress + $"/api/0.1/game-servers/{Id}/console";
+
+        if(cfg == "sm_prac")
+            IsPracmodePratice = true;
+
+        var values = new Dictionary<string, string>
+            {
+                { "line", cfg },
             };
         var content = new FormUrlEncodedContent(values);
 
@@ -63,9 +80,18 @@ public class DatHostServer : ICsgoServer
         }
     }
 
-    public async Task<ICsgoServer> StopNadePractice(HttpClient httpClient)
+    /// <summary>
+    /// This method stops the ongoing nade practice.
+    /// </summary>
+    /// <param name="httpClient"></param>
+    /// <returns>AbstractCsgoServer</returns>
+    /// <exception cref="CsgoServerException"></exception>
+    public override async Task<AbstractCsgoServer> StopNadePractice(HttpClient httpClient)
     {
         string uri = httpClient.BaseAddress + $"/api/0.1/game-servers/{Id}/console";
+
+        if (!IsPracmodePratice)
+            throw new CsgoServerException("Can only stop nade-practice if it is a practice-mode practice", this);
 
         var values = new Dictionary<string, string>
             {
@@ -88,9 +114,18 @@ public class DatHostServer : ICsgoServer
         }
     }
 
-    public async Task<ICsgoServer> StartQuickmatch(HttpClient httpClient, bool withOvertime)
+    /// <summary>
+    /// This method starts a quick match using the yousee esportleague cfg.
+    /// 
+    /// The parameter withOvertime specifies whether the match should be with overtime or not.
+    /// E.g. true = overtime.
+    /// </summary>
+    /// <param name="httpClient"></param>
+    /// <param name="withOvertime"></param>
+    /// <returns>AbstractCsgoServer</returns>
+    /// <exception cref="CsgoServerException"></exception>
+    public override async Task<AbstractCsgoServer> StartQuickmatch(HttpClient httpClient, bool withOvertime = false, string cfg = "esportliga_start")
     {
-        string cfg = "esportliga_start";
         if (withOvertime)
             cfg = "esportliga_start_med_overtime";
 
@@ -118,7 +153,15 @@ public class DatHostServer : ICsgoServer
         }
     }
 
-    public async Task<ICsgoServer> StartServer(HttpClient httpClient)
+    /// <summary>
+    /// This method start the cs:go server.
+    /// 
+    /// You can also use the method to restart the server if it is allready running.
+    /// </summary>
+    /// <param name="httpClient"></param>
+    /// <returns>AbstractCsgoServer</returns>
+    /// <exception cref="CsgoServerException"></exception>
+    public override async Task<AbstractCsgoServer> StartServer(HttpClient httpClient)
     {
         string uri = httpClient.BaseAddress + $"/api/0.1/game-servers/{Id}/start";
 
@@ -137,7 +180,13 @@ public class DatHostServer : ICsgoServer
         }
     }
 
-    public async Task<ICsgoServer> StopServer(HttpClient httpClient)
+    /// <summary>
+    /// This method stops the server.
+    /// </summary>
+    /// <param name="httpClient"></param>
+    /// <returns>AbstractCsgoServer</returns>
+    /// <exception cref="CsgoServerException"></exception>
+    public override async Task<AbstractCsgoServer> StopServer(HttpClient httpClient)
     {
         string uri = httpClient.BaseAddress + $"/api/0.1/game-servers/{Id}/stop";
 

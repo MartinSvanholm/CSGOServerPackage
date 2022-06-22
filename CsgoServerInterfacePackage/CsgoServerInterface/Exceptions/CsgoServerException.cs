@@ -10,17 +10,17 @@ namespace CsgoServerInterface.Exceptions;
 
 public class CsgoServerException : Exception
 {
-    public CsgoServerException(string message, ICsgoServer csgoServer, HttpStatusCode httpStatusCode) : base(message)
+    public CsgoServerException(string message, AbstractCsgoServer csgoServer, HttpStatusCode httpStatusCode) : base(message)
     {
         CsgoServer = csgoServer;
         StatusCode = httpStatusCode;
     }
 
-    public CsgoServerException(string message, ICsgoServer csgoServer) : base(message)
+    public CsgoServerException(string message, AbstractCsgoServer csgoServer) : base(message)
     {
         CsgoServer = csgoServer;
     }
 
-    public ICsgoServer CsgoServer { get; set; }
+    public AbstractCsgoServer CsgoServer { get; set; }
     public HttpStatusCode StatusCode { get; set; }
 }
