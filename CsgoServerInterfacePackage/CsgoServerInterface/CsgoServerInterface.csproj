@@ -12,7 +12,7 @@
     <PackageProjectUrl>https://github.com/MartinSvanholm/CSGOServerPackage</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MartinSvanholm/CSGOServerPackage</RepositoryUrl>
     <PackageId>CsgoServerInterface</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Company>Martin Svanholm</Company>
     <Product>CsgoServerInterface</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

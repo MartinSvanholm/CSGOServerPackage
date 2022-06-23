@@ -28,19 +28,11 @@ if (responseMessage.IsSuccessStatusCode)
         Console.WriteLine(e.Message);
     }
 
-    int i = 0;
     foreach (DatHostServer server in csgoServers)
     {
         csgoServerList.Add(server);
-        Console.WriteLine(server.Name);
-
-        if (i == 0)
-        {
-            AbstractCsgoServer csgoServer = await server.StartServer(client);
-
-            Console.WriteLine(csgoServer.Booting);
-        }
-        i++;
+        Console.WriteLine(server.GetConnectionIp());
+        Console.WriteLine(server.GetStatus());
     }
 }
 else

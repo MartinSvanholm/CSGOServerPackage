@@ -73,4 +73,22 @@ public abstract class AbstractCsgoServer
     {
         throw new NotImplementedException();
     }
+
+    public string GetConnectionIp()
+    {
+        if (CsgoSettings.Password == "")
+            return $"connect {Ip}:{Ports.Game}";
+        else
+            return $"connect {Ip}:{Ports.Game}; password {CsgoSettings.Password}";
+    }
+
+    public string GetStatus()
+    {
+        if (Booting == true)
+            return "Booting";
+        else if (On == true)
+            return "On";
+        else
+            return "Off";
+    }
 }
