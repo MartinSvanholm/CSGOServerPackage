@@ -21,7 +21,6 @@ if (responseMessage.IsSuccessStatusCode)
     try
     {
         csgoServerList.AddRange(await responseMessage.Content.ReadAsAsync<List<DatHostServer>>());
-            
     }
     catch (Exception e)
     {
@@ -44,4 +43,34 @@ try
 catch (Exception e)
 {
     Console.WriteLine(e);
+}
+
+async Task<DatHostServer> GetDatHostServerAsync()
+{
+    ArgumentNullException.ThrowIfNull(client.BaseAddress, nameof(client.BaseAddress));
+
+    DatHostServer datHostServer;
+
+    string uri = client.BaseAddress.ToString() + "/api/0.1/game-servers/{SERVER ID}";
+
+    using HttpResponseMessage responseMessage = await client.GetAsync(uri);
+
+    if (responseMessage.IsSuccessStatusCode)
+    {
+        try
+        {
+            datHostServer = await responseMessage.Content.ReadAsAsync<DatHostServer>();
+            return datHostServer;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            throw;
+        }
+    }
+    else
+    {
+        Console.WriteLine(responseMessage.ReasonPhrase);
+        throw new Exception(responseMessage.ReasonPhrase);
+    }
 }

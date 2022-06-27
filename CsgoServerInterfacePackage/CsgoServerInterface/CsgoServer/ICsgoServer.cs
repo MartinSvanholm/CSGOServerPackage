@@ -8,7 +8,7 @@ namespace CsgoServerInterface.CsgoServer
         bool Booting { get; set; }
 
         [JsonProperty("csgo_settings")]
-        CsgoSettings? CsgoSettings { get; set; }
+        CsgoSettings CsgoSettings { get; set; }
 
         [JsonProperty("game")]
         string? Game { get; set; }
@@ -38,9 +38,6 @@ namespace CsgoServerInterface.CsgoServer
         string RawIp { get; set; }
 
         Task<ICsgoServer> RunCommand(HttpClient httpClient, string command);
-        Task<ICsgoServer> StartKnife(HttpClient httpClient, string? cfg);
-        Task<ICsgoServer> StartNadePractice(HttpClient httpClient, string? cfg);
-        Task<ICsgoServer> StartQuickmatch(HttpClient httpClient, string? cfg, bool withOvertime = false);
         Task<ICsgoServer> StartServer(HttpClient httpClient);
         Task<ICsgoServer> StopServer(HttpClient httpClient);
         string GetStatus();

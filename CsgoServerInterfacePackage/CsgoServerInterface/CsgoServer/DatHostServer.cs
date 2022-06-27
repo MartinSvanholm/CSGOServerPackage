@@ -13,22 +13,21 @@ namespace CsgoServerInterface.CsgoServer;
 /// </summary>
 public class DatHostServer : ICsgoServer
 {
-    public DatHostServer(CsgoSettings csgoSettings, string game, string id, string ip, string name, Ports ports, string rawIp)
+    public DatHostServer(CsgoSettings csgoSettings, string id, string ip, string name, Ports ports, string rawIp)
     {
         CsgoSettings = csgoSettings;
-        Game = game ?? throw new ArgumentNullException(nameof(game));
-        Id = id ?? throw new ArgumentNullException(nameof(id));
-        Ip = ip ?? throw new ArgumentNullException(nameof(ip));
-        Name = name ?? throw new ArgumentNullException(nameof(name));
-        Ports = ports ?? throw new ArgumentNullException(nameof(ports));
-        RawIp = rawIp ?? throw new ArgumentNullException(nameof(rawIp));
+        Id = id;
+        Ip = ip;
+        Name = name;
+        Ports = ports;
+        RawIp = rawIp;
     }
 
     [JsonProperty("booting")]
     public bool Booting { get; set; }
 
     [JsonProperty("csgo_settings")]
-    public CsgoSettings? CsgoSettings { get; set; }
+    public CsgoSettings CsgoSettings { get; set; }
 
     [JsonProperty("game")]
     public string? Game { get; set; }
@@ -70,7 +69,7 @@ public class DatHostServer : ICsgoServer
 
         var values = new Dictionary<string, string>
             {
-                { "line", $"sm_prac" },
+                { "line", command },
             };
         var content = new FormUrlEncodedContent(values);
 
@@ -84,122 +83,6 @@ public class DatHostServer : ICsgoServer
         {
             if (responseMessage.ReasonPhrase == null)
                 responseMessage.ReasonPhrase = $"Could not run command: {command}";
-
-            throw new CsgoServerException(responseMessage.ReasonPhrase, this, responseMessage.StatusCode);
-        }
-    }
-
-    /// <summary>
-    /// This method starts a nade practice.
-    /// </summary>
-    /// <param name="httpClient"></param>
-    /// <returns>AbstractCsgoServer</returns>
-    /// <exception cref="CsgoServerException"></exception>
-    public async Task<ICsgoServer> StartNadePractice(HttpClient httpClient, string? cfg)
-    {
-        if (cfg == null)
-            cfg = ServerHelper.GetCfg("pracc.txt");
-
-        string uri = httpClient.BaseAddress + $"/api/0.1/game-servers/{Id}/console";
-
-        var values = new Dictionary<string, string>
-            {
-                { "line", cfg },
-            };
-        var content = new FormUrlEncodedContent(values);
-
-        using HttpResponseMessage responseMessage = await httpClient.PostAsync(uri, content);
-
-        if (responseMessage.IsSuccessStatusCode)
-        {
-            return this;
-        }
-        else
-        {
-            if (responseMessage.ReasonPhrase == null)
-                responseMessage.ReasonPhrase = "Could not start nade-practice";
-
-            throw new CsgoServerException(responseMessage.ReasonPhrase, this, responseMessage.StatusCode);
-        }
-    }
-
-    /// <summary>
-    /// This method starts a knife round.
-    /// </summary>
-    /// <param name="httpClient"></param>
-    /// <param name="cfg"></param>
-    /// <returns>CsgoServer</returns>
-    /// <exception cref="CsgoServerException"></exception>
-    public async Task<ICsgoServer> StartKnife(HttpClient httpClient, string? cfg)
-    {
-        if (cfg == null)
-            cfg = ServerHelper.GetCfg("knife.txt");
-
-        string uri = httpClient.BaseAddress + $"/api/0.1/game-servers/{Id}/console";
-
-        var values = new Dictionary<string, string>
-            {
-                { "line", cfg },
-            };
-        var content = new FormUrlEncodedContent(values);
-
-        using HttpResponseMessage responseMessage = await httpClient.PostAsync(uri, content);
-
-        if (responseMessage.IsSuccessStatusCode)
-        {
-            return this;
-        }
-        else
-        {
-            if (responseMessage.ReasonPhrase == null)
-                responseMessage.ReasonPhrase = "Could not start knife";
-
-            throw new CsgoServerException(responseMessage.ReasonPhrase, this, responseMessage.StatusCode);
-        }
-    }
-
-    /// <summary>
-    /// This method starts a quick match using the yousee esportleague cfg.
-    /// 
-    /// The parameter withOvertime specifies whether the match should be with overtime or not (using the default config).
-    /// E.g. true = overtime.
-    /// 
-    /// The parameter cfg specifies a custom config which must be a string containing all the cs:go commands.
-    /// E.g. ammo_grenade_limit_default 1; ammo_grenade_limit_flashbang 2; ... mp_restartgame 10;
-    /// </summary>
-    /// <param name="httpClient"></param>
-    /// <param name="withOvertime"></param>
-    /// <returns>AbstractCsgoServer</returns>
-    /// <exception cref="CsgoServerException"></exception>
-    public async Task<ICsgoServer> StartQuickmatch(HttpClient httpClient, string? cfg, bool withOvertime = false)
-    {
-        if (cfg == null)
-        {
-            if (withOvertime)
-                cfg = ServerHelper.GetCfg("esportliga_start_med_overtime.txt");
-            else
-                cfg = ServerHelper.GetCfg("esportliga_start.txt");
-        }
-
-        string uri = httpClient.BaseAddress + $"/api/0.1/game-servers/{Id}/console";
-
-        var values = new Dictionary<string, string>
-            {
-                { "line", cfg },
-            };
-        var content = new FormUrlEncodedContent(values);
-
-        using HttpResponseMessage responseMessage = await httpClient.PostAsync(uri, content);
-
-        if (responseMessage.IsSuccessStatusCode)
-        {
-            MatchId = "Quickmaatch";
-            return this;
-        }
-        else
-        {
-            if (responseMessage.ReasonPhrase == null)
-                responseMessage.ReasonPhrase = "Could not start match";
 
             throw new CsgoServerException(responseMessage.ReasonPhrase, this, responseMessage.StatusCode);
         }

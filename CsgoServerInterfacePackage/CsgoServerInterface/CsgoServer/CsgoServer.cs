@@ -42,7 +42,7 @@ public class CsgoServer : ICsgoServer
     public bool Booting { get; set; }
 
     [JsonProperty("csgo_settings")]
-    public CsgoSettings? CsgoSettings { get; set; }
+    public CsgoSettings CsgoSettings { get; set; }
 
     [JsonProperty("game")]
     public string? Game { get; set; }
@@ -114,85 +114,6 @@ public class CsgoServer : ICsgoServer
         try
         {
             string response = await Rcon.SendCommandAsync(command);
-            return this;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// This method starts a knife round.
-    /// </summary>
-    /// <param name="httpClient"></param>
-    /// <param name="cfg"></param>
-    /// <returns>CsgoServer</returns>
-    /// <exception cref="CsgoServerException"></exception>
-    public async Task<ICsgoServer> StartKnife(HttpClient httpClient, string? cfg)
-    {
-        if (cfg == null)
-            cfg = ServerHelper.GetCfg("knife.txt");
-
-        try
-        {
-            string response = await Rcon.SendCommandAsync(cfg);
-            return this;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// This method starts a nade practice.
-    /// </summary>
-    /// <param name="httpClient"></param>
-    /// <returns>AbstractCsgoServer</returns>
-    /// <exception cref="CsgoServerException"></exception>
-    public async Task<ICsgoServer> StartNadePractice(HttpClient httpClient, string? cfg)
-    {
-        if (cfg == null)
-            cfg = ServerHelper.GetCfg("pracc.txt");
-
-        try
-        {
-            string response = await Rcon.SendCommandAsync(cfg);
-            return this;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// This method starts a quick match using the yousee esportleague cfg.
-    /// 
-    /// The parameter withOvertime specifies whether the match should be with overtime or not (using the default config).
-    /// E.g. true = overtime.
-    /// 
-    /// The parameter cfg specifies a custom config which must be a string containing all the cs:go commands.
-    /// E.g. ammo_grenade_limit_default 1; ammo_grenade_limit_flashbang 2; ... mp_restartgame 10;
-    /// </summary>
-    /// <param name="httpClient"></param>
-    /// <param name="withOvertime"></param>
-    /// <returns>AbstractCsgoServer</returns>
-    /// <exception cref="CsgoServerException"></exception>
-    public async Task<ICsgoServer> StartQuickmatch(HttpClient httpClient, string? cfg, bool withOvertime = false)
-    {
-        if (cfg == null)
-        {
-            if (withOvertime)
-                cfg = ServerHelper.GetCfg("esportliga_start_med_overtime.txt");
-            else
-                cfg = ServerHelper.GetCfg("esportliga_start.txt");
-        }
-
-        try
-        {
-            string response = await Rcon.SendCommandAsync(cfg);
             return this;
         }
         catch (Exception)
