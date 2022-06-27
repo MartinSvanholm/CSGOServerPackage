@@ -1,0 +1,19 @@
+mp_warmup_end  
+mp_freezetime 8
+bot_kick
+mp_ct_default_melee weapon_knife
+mp_t_default_melee weapon_knife
+mp_ct_default_secondary ""
+mp_t_default_secondary ""
+mp_ct_default_primary ""
+mp_t_default_primary ""
+mp_startmoney 0
+mp_roundtime 3
+mp_roundtime_defuse 3
+mp_give_player_C4 0
+mp_restartgame 3
+mp_free_armor 1
+mp_restartgame 10
+say ">LIVE - KNIV FOR SIDEVALG<
+say ">START KAMPEN EFTER MED RCON ESPORTLIGA_START KOMMAND<
+say ">SPIL FAIR!<

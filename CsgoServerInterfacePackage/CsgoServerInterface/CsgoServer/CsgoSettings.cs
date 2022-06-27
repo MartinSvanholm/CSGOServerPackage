@@ -4,6 +4,12 @@ namespace CsgoServerInterface.CsgoServer;
 
 public class CsgoSettings
 {
+    public CsgoSettings(string password, string rcon)
+    {
+        Password = password ?? throw new ArgumentNullException(nameof(password));
+        Rcon = rcon ?? throw new ArgumentNullException(nameof(rcon));
+    }
+
     [JsonProperty("autoload_configs")]
     public List<string>? AutoloadConfigs { get; set; }
 
@@ -28,9 +34,6 @@ public class CsgoSettings
     [JsonProperty("game_mode")]
     public string? GameMode { get; set; }
 
-    [JsonProperty("insecure")]
-    public bool Insecure { get; set; }
-
     [JsonProperty("mapgroup")]
     public string? Mapgroup { get; set; }
 
@@ -41,19 +44,10 @@ public class CsgoSettings
     public string? MapsSource { get; set; }
 
     [JsonProperty("password")]
-    public string? Password { get; set; }
-
-    [JsonProperty("private_server")]
-    public bool PrivateServer { get; set; }
-
-    [JsonProperty("pure_server")]
-    public bool PureServer { get; set; }
+    public string Password { get; set; }
 
     [JsonProperty("rcon")]
-    public string? Rcon { get; set; }
-
-    [JsonProperty("slots")]
-    public int Slots { get; set; }
+    public string Rcon { get; set; }
 
     [JsonProperty("sourcemod_admins")]
     public string? SourcemodAdmins { get; set; }

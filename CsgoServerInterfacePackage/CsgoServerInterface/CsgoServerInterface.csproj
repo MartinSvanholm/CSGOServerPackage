@@ -12,7 +12,7 @@
     <PackageProjectUrl>https://github.com/MartinSvanholm/CSGOServerPackage</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MartinSvanholm/CSGOServerPackage</RepositoryUrl>
     <PackageId>CsgoServerInterface</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Company>Martin Svanholm</Company>
     <Product>CsgoServerInterface</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -27,7 +27,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CoreRCON" Version="5.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Cfg\esportliga_start.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cfg\esportliga_start_med_overtime.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cfg\knife.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cfg\pracc.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

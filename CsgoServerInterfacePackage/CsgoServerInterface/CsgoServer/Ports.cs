@@ -4,8 +4,13 @@ namespace CsgoServerInterface.CsgoServer;
 
 public class Ports
 {
+    public Ports(int game)
+    {
+        Game = game;
+    }
+
     [JsonProperty("game")]
-    public int? Game { get; set; }
+    public int Game { get; set; }
 
     [JsonProperty("gotv")]
     public int? Gotv { get; set; }

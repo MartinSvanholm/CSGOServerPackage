@@ -2,8 +2,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 
-List<DatHostServer> csgoServers = new List<DatHostServer>();
-List<AbstractCsgoServer> csgoServerList = new List<AbstractCsgoServer>();
+List<ICsgoServer> csgoServerList = new();
 HttpClient client = new HttpClient();
 
 client.BaseAddress = new Uri("https://dathost.net");
@@ -21,21 +20,28 @@ if (responseMessage.IsSuccessStatusCode)
 {
     try
     {
-        csgoServers = await responseMessage.Content.ReadAsAsync<List<DatHostServer>>();
+        csgoServerList.AddRange(await responseMessage.Content.ReadAsAsync<List<DatHostServer>>());
+            
     }
     catch (Exception e)
     {
         Console.WriteLine(e.Message);
     }
-
-    foreach (DatHostServer server in csgoServers)
-    {
-        csgoServerList.Add(server);
-        Console.WriteLine(server.GetConnectionIp());
-        Console.WriteLine(server.GetStatus());
-    }
 }
 else
 {
     Console.WriteLine(responseMessage.ReasonPhrase);
+}
+
+try
+{
+    CsgoServer csgoServer = new(csgoSettings: new("hvk1212", "vikings"), "1", "rodrik.dathost.net", "Hobro Vikings", ports: new(28145), "51.77.68.119");
+
+    await csgoServer.RunCommand(client, "echo hi");
+    csgoServer.Rcon.Dispose();
+    csgoServerList.Add(csgoServer);
+}
+catch (Exception e)
+{
+    Console.WriteLine(e);
 }
